@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Babylon Kino CineWatch Insights - project by samanth </title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="px-8">
+    <div class="my-8">
+        <h1 class="text-xl text-gray-900 font-bold">KinoWatch Insights: Intelligent Device Monitoring, Network Observatory and Update Management</h1>
+        <p class="text-md text-gray-500">
+          This application utilizes the system information module to provide users with quick access to essential hardware details. Users can view information about their CPU, memory, graphics controllers, operating system, disks, battery, and network interfaces in a user-friendly interface. It offers a convenient way to explore and understand key hardware specifications.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-3 gap-4">
+      <div class="border rounded-xl p-6">
+
+        <div class="w-auto border rounded-xl flex flex-col py-1 px-2 items-start justify-start">
+          <h1 class="text-sm font-semibold">Status:</h1>
+        <div id="status" class=" w-auto text-sm"></div>
+      </div>
+
+      </div>
+      <div id="" class="flex flex-col p-4 border rounded-xl"></div>
+
+      <div id="device-info" class="flex flex-col p-6 border rounded-xl"></div>
+    </div>
+    
+  
+  <script>
+
+    const queryParams = new URLSearchParams(window.location.search);
+    const hardwareInfo = JSON.parse(queryParams.get('deviceInfo'));
+
+    console.log(hardwareInfo)
+    const hardwareInfoElement = document.getElementById('device-info');
+    
+    if (hardwareInfoElement) {
+      hardwareInfoElement.innerHTML = `
+        <h2 class="font-semibold mb-3 text-lg">Device Information:</h2>
+        <div class="py-2">
+          <h3 class="flex flex-col"><span class="font-semibold text-sm mb-1">CPU:</span><p class="text-sm font-normal"> ${hardwareInfo.cpu.manufacturer} ${hardwareInfo.cpu.brand} ${hardwareInfo.cpu.speed} GHz (${hardwareInfo.cpu.cores} cores)</p> </h3></div>
+        <div class="py-2">
+          <h3 class="flex flex-col"><span class="font-semibold text-sm mb-1">Memory:</span><p class="text-sm font-normal"> Total ${hardwareInfo.memory ? hardwareInfo.memory.total : 'N/A'} bytes, Free ${hardwareInfo.memory ? hardwareInfo.memory.free : 'N/A'} bytes</p></h3></div>
+        <div class="py-2">
+          <h3 class="flex flex-col"><span class="font-semibold text-sm mb-1">Graphics Controllers:</span><p class="text-sm font-normal"> ${hardwareInfo.graphics ? hardwareInfo.graphics.controllers.map(controller => controller.model).join(', ') : 'N/A'}</p></h3></div>
+        <div class="py-2">
+          <h3 class="flex flex-col"><span class="font-semibold text-sm mb-1">Operating System:</span><p class="text-sm font-normal"> ${hardwareInfo.osInfo ? `${hardwareInfo.osInfo.platform} ${hardwareInfo.osInfo.distro} ${hardwareInfo.osInfo.release} (${hardwareInfo.osInfo.arch})` : 'N/A'}</p></h3></div>
+        <div class="py-2">
+          <h3 class="flex flex-col"><span class="font-semibold text-sm mb-1">Disks:</span> 
+            <p class="text-sm font-normal"> ${hardwareInfo.diskLayout ? hardwareInfo.diskLayout.map(disk => `<div class="text-sm border rounded-md p-1 mb-2">${disk.name} (Size: ${disk.size} bytes, Type: ${disk.type}) </div>`).join(' ') : 'N/A'}</p></h3></div>
+        <div class="py-2">
+          <h3 class="flex flex-col"><span class="font-semibold text-sm mb-1">Battery:</span><p class="text-sm font-normal"> ${hardwareInfo.battery ? ` ${hardwareInfo.battery.manufacturer} ${hardwareInfo.battery.model}, ${hardwareInfo.battery.currentCapacity}/${hardwareInfo.battery.maxCapacity} mAh (${hardwareInfo.battery.percent}%)` : 'N/A'}</p></h3></div>
+        <div class="py-2">
+          <div class="flex flex-col">
+            <span class="font-semibold text-sm mb-1">Network Interfaces:</span>
+            ${hardwareInfo.networkInterfaces ? hardwareInfo.networkInterfaces.map(interface => `
+             
+            <div class="text-sm border rounded-md p-2 flex flex-col flex-wrap mb-2">
+              <div class="text-sm mb-1">${interface.iface} </div>
+              <div class="flex flex-row flex-wrap gap-2 ">
+                  <div class=" border rounded-md p-2 px-4 flex flex-col bg-gray-50">
+                    <span class="text-xs font-medium mb-1"> MAC Address:</span>
+                    <p class="text-sm font-normal ">${interface.mac} </p>
+                  </div>
+                  
+                  <div class=" border rounded-md p-2 px-4 flex flex-col  bg-gray-50">
+                    <span class="text-xs font-medium mb-1"> IP version 4:</span> 
+                    <p class="text-sm font-normal "> ${interface.ip4}</p> 
+                  </div>
+                  
+                  <div class=" border rounded-md p-2 px-4 flex flex-col  bg-gray-50">
+                    <span class="text-xs font-medium mb-1">IP version 6: </span>
+                    <p class="text-sm font-normal ">${interface.ip6}</p> 
+                  </div>
+            </div>
+            </div> `).join(' ') : 'N/A'}
+          
+          </div>
+        
+      </div>
+
+      `;
+    } else {
+      console.error('Element with ID "device-info" not found.');
+    }
+
+    const updateOnlineStatus = () => {
+  document.getElementById('status').innerHTML = navigator.onLine ? 'online' : 'offline'
+}
+
+window.addEventListener('online', updateOnlineStatus)
+window.addEventListener('offline', updateOnlineStatus)
+
+updateOnlineStatus()
+
+  </script>
+
+</body>
+</html>
