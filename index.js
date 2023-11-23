@@ -10,8 +10,6 @@ const systemInformation = require('systeminformation');
         height:620
     });
 
-    
-  // Get hardware specifications
   systemInformation.get({
     cpu: 'manufacturer, brand, speed, cores, physicalCores',
     memory: 'total, free',
